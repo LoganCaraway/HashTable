@@ -72,26 +72,25 @@ public class HashTable <Key, Value> {
             return;
         int i = hash(key);
         int j = 0;
-        while (!keys[i].equals(key)) {
+        while (!key.equals(keys[i])) {
             i = (i + (j * j)) % size;
             j++;
         }
         keys[i] = null;
         vals[i] = null;
-        i = (i + (j * j)) % size;
-        while (keys[i] != null) {
-            j++;
-            Key key_to_redo = keys[i];
-            Value val_to_redo = vals[i];
-            keys[i] = null;
-            vals[i] = null;
-            num--;
-            put(key_to_redo, val_to_redo);
-            i = (i + (j * j)) % size;
+        for (j = i + 1; j != i; j = (j + 1) % size) {
+            if (keys[j] != null) {
+                Key key_to_redo = keys[j];
+                Value val_to_redo = vals[j];
+                keys[j] = null;
+                vals[j] = null;
+                num--;
+                put(key_to_redo, val_to_redo);
+            }
         }
         num--;
-        if (num > 0 && num <= size/8)
-            resize(size/2);
+        if (num > 0 && num <= size / 8)
+            resize(size / 2);
     }
     
     /*Resizes the array to the given size*/
